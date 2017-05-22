@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="CIMSDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Company">
+    <Key>
+      <PropertyRef Name="comp_id" />
+    </Key>
+    <Property Name="comp_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="comp_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="PDF" Relationship="Self.FK_PDF_Company_id" FromRole="Company" ToRole="PDF" />
+  </EntityType>
+  <EntityType Name="Industry">
+    <Key>
+      <PropertyRef Name="ind_id" />
+    </Key>
+    <Property Name="ind_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ind_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="PDF" Relationship="Self.FK_PDF_Industry_id" FromRole="Industry" ToRole="PDF" />
+  </EntityType>
+  <EntityType Name="Message">
+    <Key>
+      <PropertyRef Name="mess_id" />
+    </Key>
+    <Property Name="mess_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="mess_user_id" Type="Int32" Nullable="false" />
+    <Property Name="mess_content" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="mess_time" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="reply_content" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="reply_time" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+    <NavigationProperty Name="Users" Relationship="CIMSDBModel.FK_Message_Users_id" FromRole="Message" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="Meterial">
+    <Key>
+      <PropertyRef Name="met_id" />
+    </Key>
+    <Property Name="met_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="met_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="PDF" Relationship="Self.FK_PDF_Meterial_id" FromRole="Meterial" ToRole="PDF" />
+  </EntityType>
+  <EntityType Name="PDF">
+    <Key>
+      <PropertyRef Name="pdf_id" />
+    </Key>
+    <Property Name="pdf_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="pdf_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="pdf_uploadtime" Type="String" MaxLength="17" FixedLength="true" Unicode="false" Nullable="false" />
+    <Property Name="pdf_address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="pdf_met_id" Type="Int32" Nullable="false" />
+    <Property Name="pdf_comp_id" Type="Int32" Nullable="false" />
+    <Property Name="pdf_ind_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Company" Relationship="Self.FK_PDF_Company_id" FromRole="PDF" ToRole="Company" />
+    <NavigationProperty Name="Industry" Relationship="Self.FK_PDF_Industry_id" FromRole="PDF" ToRole="Industry" />
+    <NavigationProperty Name="Meterial" Relationship="Self.FK_PDF_Meterial_id" FromRole="PDF" ToRole="Meterial" />
+  </EntityType>
+  <Association Name="FK_PDF_Company_id">
+    <End Role="Company" Type="Self.Company" Multiplicity="1" />
+    <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Company">
+        <PropertyRef Name="comp_id" />
+      </Principal>
+      <Dependent Role="PDF">
+        <PropertyRef Name="pdf_comp_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PDF_Industry_id">
+    <End Role="Industry" Type="Self.Industry" Multiplicity="1" />
+    <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Industry">
+        <PropertyRef Name="ind_id" />
+      </Principal>
+      <Dependent Role="PDF">
+        <PropertyRef Name="pdf_ind_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_PDF_Meterial_id">
+    <End Role="Meterial" Type="Self.Meterial" Multiplicity="1" />
+    <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Meterial">
+        <PropertyRef Name="met_id" />
+      </Principal>
+      <Dependent Role="PDF">
+        <PropertyRef Name="pdf_met_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="CIMSDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Company" EntityType="Self.Company" />
+    <EntitySet Name="Industry" EntityType="Self.Industry" />
+    <EntitySet Name="Message" EntityType="Self.Message" />
+    <EntitySet Name="Meterial" EntityType="Self.Meterial" />
+    <EntitySet Name="PDF" EntityType="Self.PDF" />
+    <AssociationSet Name="FK_PDF_Company_id" Association="Self.FK_PDF_Company_id">
+      <End Role="Company" EntitySet="Company" />
+      <End Role="PDF" EntitySet="PDF" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PDF_Industry_id" Association="Self.FK_PDF_Industry_id">
+      <End Role="Industry" EntitySet="Industry" />
+      <End Role="PDF" EntitySet="PDF" />
+    </AssociationSet>
+    <AssociationSet Name="FK_PDF_Meterial_id" Association="Self.FK_PDF_Meterial_id">
+      <End Role="Meterial" EntitySet="Meterial" />
+      <End Role="PDF" EntitySet="PDF" />
+    </AssociationSet>
+    <EntitySet Name="View_PDF" EntityType="CIMSDBModel.View_PDF" />
+    <EntitySet Name="User_Group" EntityType="CIMSDBModel.User_Group" />
+    <EntitySet Name="Users" EntityType="CIMSDBModel.Users" />
+    <AssociationSet Name="FK_Message_Users_id" Association="CIMSDBModel.FK_Message_Users_id">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Message" EntitySet="Message" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Users_User_Group" Association="CIMSDBModel.FK_Users_User_Group">
+      <End Role="User_Group" EntitySet="User_Group" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="View_PDF">
+    <Key>
+      <PropertyRef Name="pdf_id" />
+      <PropertyRef Name="pdf_name" />
+      <PropertyRef Name="pdf_uploadtime" />
+      <PropertyRef Name="met_name" />
+      <PropertyRef Name="comp_name" />
+      <PropertyRef Name="ind_name" />
+    </Key>
+    <Property Name="pdf_id" Type="Int32" Nullable="false" />
+    <Property Name="pdf_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="pdf_uploadtime" Type="String" Nullable="false" MaxLength="17" FixedLength="true" Unicode="false" />
+    <Property Name="met_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="comp_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="ind_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="User_Group">
+    <Key>
+      <PropertyRef Name="group_id" />
+    </Key>
+    <Property Name="group_id" Type="Int32" Nullable="false" />
+    <Property Name="group_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Users" Relationship="CIMSDBModel.FK_Users_User_Group" FromRole="User_Group" ToRole="Users" />
+  </EntityType>
+  <EntityType Name="Users">
+    <Key>
+      <PropertyRef Name="user_id" />
+    </Key>
+    <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="user_name" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+    <Property Name="user_password" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="false" />
+    <Property Name="user_group_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="Message" Relationship="CIMSDBModel.FK_Message_Users_id" FromRole="Users" ToRole="Message" />
+    <NavigationProperty Name="User_Group" Relationship="CIMSDBModel.FK_Users_User_Group" FromRole="Users" ToRole="User_Group" />
+  </EntityType>
+  <Association Name="FK_Message_Users_id">
+    <End Type="CIMSDBModel.Users" Role="Users" Multiplicity="1" />
+    <End Type="CIMSDBModel.Message" Role="Message" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="user_id" />
+      </Principal>
+      <Dependent Role="Message">
+        <PropertyRef Name="mess_user_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Users_User_Group">
+    <End Type="CIMSDBModel.User_Group" Role="User_Group" Multiplicity="1" />
+    <End Type="CIMSDBModel.Users" Role="Users" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User_Group">
+        <PropertyRef Name="group_id" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="user_group_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

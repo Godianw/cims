@@ -1,0 +1,473 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CIMSDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="comp_id" />
+          </Key>
+          <Property Name="comp_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="comp_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Industry">
+          <Key>
+            <PropertyRef Name="ind_id" />
+          </Key>
+          <Property Name="ind_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ind_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="mess_id" />
+          </Key>
+          <Property Name="mess_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="mess_user_id" Type="int" Nullable="false" />
+          <Property Name="mess_content" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="mess_time" Type="char" MaxLength="10" Nullable="false" />
+          <Property Name="reply_content" Type="nvarchar" MaxLength="100" />
+          <Property Name="reply_time" Type="char" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Meterial">
+          <Key>
+            <PropertyRef Name="met_id" />
+          </Key>
+          <Property Name="met_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="met_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PDF">
+          <Key>
+            <PropertyRef Name="pdf_id" />
+          </Key>
+          <Property Name="pdf_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="pdf_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="pdf_uploadtime" Type="char" MaxLength="17" Nullable="false" />
+          <Property Name="pdf_address" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="pdf_met_id" Type="int" Nullable="false" />
+          <Property Name="pdf_comp_id" Type="int" Nullable="false" />
+          <Property Name="pdf_ind_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User_Group">
+          <Key>
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="group_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="group_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="user_name" Type="varchar" MaxLength="11" Nullable="false" />
+          <Property Name="user_password" Type="varchar" MaxLength="16" Nullable="false" />
+          <Property Name="user_group_id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--生成过程中发现错误:
+警告 6002: 表/视图“CIMSDB.dbo.View_PDF”未定义主键。已推断出该键，并将定义创建为只读的表/视图。-->
+        <EntityType Name="View_PDF">
+          <Key>
+            <PropertyRef Name="pdf_id" />
+            <PropertyRef Name="pdf_name" />
+            <PropertyRef Name="pdf_uploadtime" />
+            <PropertyRef Name="met_name" />
+            <PropertyRef Name="comp_name" />
+            <PropertyRef Name="ind_name" />
+          </Key>
+          <Property Name="pdf_id" Type="int" Nullable="false" />
+          <Property Name="pdf_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="pdf_uploadtime" Type="char" MaxLength="17" Nullable="false" />
+          <Property Name="met_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="comp_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ind_name" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Message_Users_id">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Message" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="mess_user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PDF_Company_id">
+          <End Role="Company" Type="Self.Company" Multiplicity="1" />
+          <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="comp_id" />
+            </Principal>
+            <Dependent Role="PDF">
+              <PropertyRef Name="pdf_comp_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PDF_Industry_id">
+          <End Role="Industry" Type="Self.Industry" Multiplicity="1" />
+          <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Industry">
+              <PropertyRef Name="ind_id" />
+            </Principal>
+            <Dependent Role="PDF">
+              <PropertyRef Name="pdf_ind_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PDF_Meterial_id">
+          <End Role="Meterial" Type="Self.Meterial" Multiplicity="1" />
+          <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Meterial">
+              <PropertyRef Name="met_id" />
+            </Principal>
+            <Dependent Role="PDF">
+              <PropertyRef Name="pdf_met_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_User_Group">
+          <End Role="User_Group" Type="Self.User_Group" Multiplicity="1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="user_group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CIMSDBModelStoreContainer">
+          <EntitySet Name="Company" EntityType="Self.Company" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Industry" EntityType="Self.Industry" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Message" EntityType="Self.Message" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Meterial" EntityType="Self.Meterial" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PDF" EntityType="Self.PDF" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User_Group" EntityType="Self.User_Group" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="View_PDF" EntityType="Self.View_PDF" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [View_PDF].[pdf_id] AS [pdf_id], 
+    [View_PDF].[pdf_name] AS [pdf_name], 
+    [View_PDF].[pdf_uploadtime] AS [pdf_uploadtime], 
+    [View_PDF].[met_name] AS [met_name], 
+    [View_PDF].[comp_name] AS [comp_name], 
+    [View_PDF].[ind_name] AS [ind_name]
+    FROM [dbo].[View_PDF] AS [View_PDF]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Message_Users_id" Association="Self.FK_Message_Users_id">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Message" EntitySet="Message" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PDF_Company_id" Association="Self.FK_PDF_Company_id">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="PDF" EntitySet="PDF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PDF_Industry_id" Association="Self.FK_PDF_Industry_id">
+            <End Role="Industry" EntitySet="Industry" />
+            <End Role="PDF" EntitySet="PDF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PDF_Meterial_id" Association="Self.FK_PDF_Meterial_id">
+            <End Role="Meterial" EntitySet="Meterial" />
+            <End Role="PDF" EntitySet="PDF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_User_Group" Association="Self.FK_Users_User_Group">
+            <End Role="User_Group" EntitySet="User_Group" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CIMSDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Company">
+          <Key>
+            <PropertyRef Name="comp_id" />
+          </Key>
+          <Property Name="comp_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="comp_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="PDF" Relationship="Self.FK_PDF_Company_id" FromRole="Company" ToRole="PDF" />
+        </EntityType>
+        <EntityType Name="Industry">
+          <Key>
+            <PropertyRef Name="ind_id" />
+          </Key>
+          <Property Name="ind_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ind_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="PDF" Relationship="Self.FK_PDF_Industry_id" FromRole="Industry" ToRole="PDF" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="mess_id" />
+          </Key>
+          <Property Name="mess_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="mess_user_id" Type="Int32" Nullable="false" />
+          <Property Name="mess_content" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="mess_time" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="reply_content" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="reply_time" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <NavigationProperty Name="Users" Relationship="CIMSDBModel.FK_Message_Users_id" FromRole="Message" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Meterial">
+          <Key>
+            <PropertyRef Name="met_id" />
+          </Key>
+          <Property Name="met_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="met_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="PDF" Relationship="Self.FK_PDF_Meterial_id" FromRole="Meterial" ToRole="PDF" />
+        </EntityType>
+        <EntityType Name="PDF">
+          <Key>
+            <PropertyRef Name="pdf_id" />
+          </Key>
+          <Property Name="pdf_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="pdf_name" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pdf_uploadtime" Type="String" MaxLength="17" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="pdf_address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="pdf_met_id" Type="Int32" Nullable="false" />
+          <Property Name="pdf_comp_id" Type="Int32" Nullable="false" />
+          <Property Name="pdf_ind_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Company" Relationship="Self.FK_PDF_Company_id" FromRole="PDF" ToRole="Company" />
+          <NavigationProperty Name="Industry" Relationship="Self.FK_PDF_Industry_id" FromRole="PDF" ToRole="Industry" />
+          <NavigationProperty Name="Meterial" Relationship="Self.FK_PDF_Meterial_id" FromRole="PDF" ToRole="Meterial" />
+        </EntityType>
+        <Association Name="FK_PDF_Company_id">
+          <End Role="Company" Type="Self.Company" Multiplicity="1" />
+          <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Company">
+              <PropertyRef Name="comp_id" />
+            </Principal>
+            <Dependent Role="PDF">
+              <PropertyRef Name="pdf_comp_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PDF_Industry_id">
+          <End Role="Industry" Type="Self.Industry" Multiplicity="1" />
+          <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Industry">
+              <PropertyRef Name="ind_id" />
+            </Principal>
+            <Dependent Role="PDF">
+              <PropertyRef Name="pdf_ind_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_PDF_Meterial_id">
+          <End Role="Meterial" Type="Self.Meterial" Multiplicity="1" />
+          <End Role="PDF" Type="Self.PDF" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Meterial">
+              <PropertyRef Name="met_id" />
+            </Principal>
+            <Dependent Role="PDF">
+              <PropertyRef Name="pdf_met_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CIMSDBEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Company" EntityType="Self.Company" />
+          <EntitySet Name="Industry" EntityType="Self.Industry" />
+          <EntitySet Name="Message" EntityType="Self.Message" />
+          <EntitySet Name="Meterial" EntityType="Self.Meterial" />
+          <EntitySet Name="PDF" EntityType="Self.PDF" />
+          <AssociationSet Name="FK_PDF_Company_id" Association="Self.FK_PDF_Company_id">
+            <End Role="Company" EntitySet="Company" />
+            <End Role="PDF" EntitySet="PDF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PDF_Industry_id" Association="Self.FK_PDF_Industry_id">
+            <End Role="Industry" EntitySet="Industry" />
+            <End Role="PDF" EntitySet="PDF" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PDF_Meterial_id" Association="Self.FK_PDF_Meterial_id">
+            <End Role="Meterial" EntitySet="Meterial" />
+            <End Role="PDF" EntitySet="PDF" />
+          </AssociationSet>
+          <EntitySet Name="View_PDF" EntityType="CIMSDBModel.View_PDF" />
+          <EntitySet Name="User_Group" EntityType="CIMSDBModel.User_Group" />
+          <EntitySet Name="Users" EntityType="CIMSDBModel.Users" />
+          <AssociationSet Name="FK_Message_Users_id" Association="CIMSDBModel.FK_Message_Users_id">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Message" EntitySet="Message" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_User_Group" Association="CIMSDBModel.FK_Users_User_Group">
+            <End Role="User_Group" EntitySet="User_Group" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="View_PDF">
+          <Key>
+            <PropertyRef Name="pdf_id" />
+            <PropertyRef Name="pdf_name" />
+            <PropertyRef Name="pdf_uploadtime" />
+            <PropertyRef Name="met_name" />
+            <PropertyRef Name="comp_name" />
+            <PropertyRef Name="ind_name" />
+          </Key>
+          <Property Name="pdf_id" Type="Int32" Nullable="false" />
+          <Property Name="pdf_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="pdf_uploadtime" Type="String" Nullable="false" MaxLength="17" FixedLength="true" Unicode="false" />
+          <Property Name="met_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="comp_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ind_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User_Group">
+          <Key>
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="group_id" Type="Int32" Nullable="false" />
+          <Property Name="group_name" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Users" Relationship="CIMSDBModel.FK_Users_User_Group" FromRole="User_Group" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="user_id" />
+          </Key>
+          <Property Name="user_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="user_name" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="false" />
+          <Property Name="user_password" Type="String" Nullable="false" MaxLength="16" FixedLength="false" Unicode="false" />
+          <Property Name="user_group_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Message" Relationship="CIMSDBModel.FK_Message_Users_id" FromRole="Users" ToRole="Message" />
+          <NavigationProperty Name="User_Group" Relationship="CIMSDBModel.FK_Users_User_Group" FromRole="Users" ToRole="User_Group" />
+        </EntityType>
+        <Association Name="FK_Message_Users_id">
+          <End Type="CIMSDBModel.Users" Role="Users" Multiplicity="1" />
+          <End Type="CIMSDBModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="user_id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="mess_user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_User_Group">
+          <End Type="CIMSDBModel.User_Group" Role="User_Group" Multiplicity="1" />
+          <End Type="CIMSDBModel.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User_Group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="user_group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CIMSDBModelStoreContainer" CdmEntityContainer="CIMSDBEntities">
+          <EntitySetMapping Name="Company">
+            <EntityTypeMapping TypeName="CIMSDBModel.Company">
+              <MappingFragment StoreEntitySet="Company">
+                <ScalarProperty Name="comp_id" ColumnName="comp_id" />
+                <ScalarProperty Name="comp_name" ColumnName="comp_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Industry">
+            <EntityTypeMapping TypeName="CIMSDBModel.Industry">
+              <MappingFragment StoreEntitySet="Industry">
+                <ScalarProperty Name="ind_id" ColumnName="ind_id" />
+                <ScalarProperty Name="ind_name" ColumnName="ind_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Message">
+            <EntityTypeMapping TypeName="CIMSDBModel.Message">
+              <MappingFragment StoreEntitySet="Message">
+                <ScalarProperty Name="mess_id" ColumnName="mess_id" />
+                <ScalarProperty Name="mess_user_id" ColumnName="mess_user_id" />
+                <ScalarProperty Name="mess_content" ColumnName="mess_content" />
+                <ScalarProperty Name="mess_time" ColumnName="mess_time" />
+                <ScalarProperty Name="reply_content" ColumnName="reply_content" />
+                <ScalarProperty Name="reply_time" ColumnName="reply_time" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Meterial">
+            <EntityTypeMapping TypeName="CIMSDBModel.Meterial">
+              <MappingFragment StoreEntitySet="Meterial">
+                <ScalarProperty Name="met_id" ColumnName="met_id" />
+                <ScalarProperty Name="met_name" ColumnName="met_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PDF">
+            <EntityTypeMapping TypeName="CIMSDBModel.PDF">
+              <MappingFragment StoreEntitySet="PDF">
+                <ScalarProperty Name="pdf_id" ColumnName="pdf_id" />
+                <ScalarProperty Name="pdf_name" ColumnName="pdf_name" />
+                <ScalarProperty Name="pdf_uploadtime" ColumnName="pdf_uploadtime" />
+                <ScalarProperty Name="pdf_address" ColumnName="pdf_address" />
+                <ScalarProperty Name="pdf_met_id" ColumnName="pdf_met_id" />
+                <ScalarProperty Name="pdf_comp_id" ColumnName="pdf_comp_id" />
+                <ScalarProperty Name="pdf_ind_id" ColumnName="pdf_ind_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="View_PDF">
+            <EntityTypeMapping TypeName="CIMSDBModel.View_PDF">
+              <MappingFragment StoreEntitySet="View_PDF">
+                <ScalarProperty Name="ind_name" ColumnName="ind_name" />
+                <ScalarProperty Name="comp_name" ColumnName="comp_name" />
+                <ScalarProperty Name="met_name" ColumnName="met_name" />
+                <ScalarProperty Name="pdf_uploadtime" ColumnName="pdf_uploadtime" />
+                <ScalarProperty Name="pdf_name" ColumnName="pdf_name" />
+                <ScalarProperty Name="pdf_id" ColumnName="pdf_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="User_Group">
+            <EntityTypeMapping TypeName="CIMSDBModel.User_Group">
+              <MappingFragment StoreEntitySet="User_Group">
+                <ScalarProperty Name="group_name" ColumnName="group_name" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="CIMSDBModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="user_group_id" ColumnName="user_group_id" />
+                <ScalarProperty Name="user_password" ColumnName="user_password" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="无" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="CIMSDBModelStoreContainer" CdmEntityContainer="CIMSDBEntities">
+    <EntitySetMapping Name="Company">
+      <EntityTypeMapping TypeName="CIMSDBModel.Company">
+        <MappingFragment StoreEntitySet="Company">
+          <ScalarProperty Name="comp_id" ColumnName="comp_id" />
+          <ScalarProperty Name="comp_name" ColumnName="comp_name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Industry">
+      <EntityTypeMapping TypeName="CIMSDBModel.Industry">
+        <MappingFragment StoreEntitySet="Industry">
+          <ScalarProperty Name="ind_id" ColumnName="ind_id" />
+          <ScalarProperty Name="ind_name" ColumnName="ind_name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Message">
+      <EntityTypeMapping TypeName="CIMSDBModel.Message">
+        <MappingFragment StoreEntitySet="Message">
+          <ScalarProperty Name="mess_id" ColumnName="mess_id" />
+          <ScalarProperty Name="mess_user_id" ColumnName="mess_user_id" />
+          <ScalarProperty Name="mess_content" ColumnName="mess_content" />
+          <ScalarProperty Name="mess_time" ColumnName="mess_time" />
+          <ScalarProperty Name="reply_content" ColumnName="reply_content" />
+          <ScalarProperty Name="reply_time" ColumnName="reply_time" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Meterial">
+      <EntityTypeMapping TypeName="CIMSDBModel.Meterial">
+        <MappingFragment StoreEntitySet="Meterial">
+          <ScalarProperty Name="met_id" ColumnName="met_id" />
+          <ScalarProperty Name="met_name" ColumnName="met_name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PDF">
+      <EntityTypeMapping TypeName="CIMSDBModel.PDF">
+        <MappingFragment StoreEntitySet="PDF">
+          <ScalarProperty Name="pdf_id" ColumnName="pdf_id" />
+          <ScalarProperty Name="pdf_name" ColumnName="pdf_name" />
+          <ScalarProperty Name="pdf_uploadtime" ColumnName="pdf_uploadtime" />
+          <ScalarProperty Name="pdf_address" ColumnName="pdf_address" />
+          <ScalarProperty Name="pdf_met_id" ColumnName="pdf_met_id" />
+          <ScalarProperty Name="pdf_comp_id" ColumnName="pdf_comp_id" />
+          <ScalarProperty Name="pdf_ind_id" ColumnName="pdf_ind_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="View_PDF">
+      <EntityTypeMapping TypeName="CIMSDBModel.View_PDF">
+        <MappingFragment StoreEntitySet="View_PDF">
+          <ScalarProperty Name="ind_name" ColumnName="ind_name" />
+          <ScalarProperty Name="comp_name" ColumnName="comp_name" />
+          <ScalarProperty Name="met_name" ColumnName="met_name" />
+          <ScalarProperty Name="pdf_uploadtime" ColumnName="pdf_uploadtime" />
+          <ScalarProperty Name="pdf_name" ColumnName="pdf_name" />
+          <ScalarProperty Name="pdf_id" ColumnName="pdf_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="User_Group">
+      <EntityTypeMapping TypeName="CIMSDBModel.User_Group">
+        <MappingFragment StoreEntitySet="User_Group">
+          <ScalarProperty Name="group_name" ColumnName="group_name" />
+          <ScalarProperty Name="group_id" ColumnName="group_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Users">
+      <EntityTypeMapping TypeName="CIMSDBModel.Users">
+        <MappingFragment StoreEntitySet="Users">
+          <ScalarProperty Name="user_group_id" ColumnName="user_group_id" />
+          <ScalarProperty Name="user_password" ColumnName="user_password" />
+          <ScalarProperty Name="user_name" ColumnName="user_name" />
+          <ScalarProperty Name="user_id" ColumnName="user_id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
