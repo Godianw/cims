@@ -50,11 +50,15 @@
                         <span class="glyphicon glyphicon-home"></span> 首页</a>
                 </li>
                 <li id="suggestionBtn">
-                    <a href="#" >
+                    <a href="MessageBoard.aspx" >
                         <span class="glyphicon glyphicon-comment"></span> 留言板</a>
                 </li>
+                <li id="suggestionReplyBtn">
+                    <a href="Reply.aspx" >
+                        <span class="glyphicon glyphicon-list-alt"></span> 留言回复</a>
+                </li>
                 <li id="userManageBtn">
-                    <a href="#" >
+                    <a href="UserManage.aspx" >
                         <span class="glyphicon glyphicon-wrench"></span> 账户管理</a>
                 </li>
                 <li id="logoutDialogBtn" onclick="Logout()">
@@ -113,13 +117,13 @@
                             <i class="icon-lock"></i>
                         </div>
 
-                         <div class="form-group">
+                        <div class="form-group" style="display:none;">
                             <input type="text" class="form-control" id="identitycode" 
                                 name="identitycode" style="width:79%; display:inline" 
                                 placeholder="短信验证码" />
                             <i class="icon-envelope"></i>
                             <input type="button" class="btn btn-sm btn-danger" style="width:20%; 
-                                display:inline" value="点击获取" />
+                                display:inline" value="点击获取" onclick="getCode()" />
                         </div>
                         
                         <div class="form-group">
@@ -158,7 +162,7 @@
                     <form id="loginForm" class="form-horizontal" >
                         <div class="form-group">
                                 <input type="text" class="form-control" id="loginPhone" 
-                                    name="loginPhone" placeholder="手机号" />
+                                    name="loginPhone" placeholder="用户名或手机号" />
                                 <i class="icon-user"></i>
                         </div>
                         
@@ -194,27 +198,39 @@
 
             var session = '<%=Session["username"] %>';
             document.getElementById('usrlab').innerText = "欢迎您," + session;
-            
+
             var usrlab = document.getElementById('usrlab').innerText;
             if (usrlab == "欢迎您,")
             {
                 $("#usrli").hide();
                 $("#logoutDialogBtn").hide();
                 $('#userManageBtn').hide();
+                $('#suggestionBtn').hide();
+                $('#suggestionReplyBtn').hide();
+                $("#CPH1_uploadFileDiv").hide();
                 $("#registerDialogBtn").show();
                 $("#loginDialogBtn").show();
+
+                if (window.location.pathname == "/UserManage.aspx" || window.location.pathname == "/Reply.aspx")
+                    window.location.href = "HomePage.aspx";
             }
             else
             {
                 $("#usrli").show();
                 $("#logoutDialogBtn").show();
+                $('#suggestionBtn').show();
+                $("#CPH1_uploadFileDiv").hide();
                 $('#userManageBtn').hide();
+                $('#suggestionReplyBtn').hide();
                 $("#registerDialogBtn").hide();
                 $("#loginDialogBtn").hide();
 
                 if (usrlab == "欢迎您,admin")  // 管理员登录时显示管理账户模块
                 {
+                    $('#suggestionBtn').hide();
                     $('#userManageBtn').show();
+                    $('#suggestionReplyBtn').show();
+                    $("#CPH1_uploadFileDiv").show();
                 }
             }
 
@@ -260,7 +276,7 @@
                     else {
                     //    alert('登录成功');
                         $('#login').modal('hide');
-
+                        $('#suggestionBtn').show();
                         $("#usrli").show();
                         $("#logoutDialogBtn").show();
                         $("#registerDialogBtn").hide();
@@ -268,7 +284,9 @@
 
                         if (data == "admin") // 用户为管理员
                         {
-                            $('#userManageBtn').show();
+                            $('#suggestionBtn').hide();
+                            $('#userManageReplyBtn').show();
+                            $("#CPH1_uploadFileDiv").show();
                         }
                         
                         document.getElementById('usrlab').innerText = "欢迎您," + data;                     
@@ -288,6 +306,11 @@
             });
         };
 
+        // 获取验证码
+        function getCode() {
+            alert("发送短信内容“ZCZH”到18818429870以获取验证码");
+        }
+
         // 注销
         function Logout() {
 
@@ -306,13 +329,16 @@
                     $("#usrli").hide();
                     $("#logoutDialogBtn").hide();
                     $('#userManageBtn').hide();
+                    $('#suggestionBtn').hide();
                     $("#registerDialogBtn").show();
                     $("#loginDialogBtn").show();
 
                     document.getElementById('usrlab').innerText = "欢迎您,";
+                    if (window.location.pathname == "/UserManage.aspx" || window.location.pathname == "/Reply.aspx")
+                        window.location.href = "HomePage.aspx";
                 },
                 error: function () {
-                    alert('注册失败!');
+                    alert('注销失败!');
                 },
                 complete: function () {
                     
@@ -373,7 +399,7 @@
                     }   
                 },
                 error: function () {
-                    alert('服务请求失败!');
+                    alert('注册失败!');
                 },
                 complete: function () {
                     $('#loading').hide();
@@ -399,7 +425,7 @@
 
     <br /><br />
 
-    <div class="bg" style="height:200px">
+    <div class="bg" style="height:80px">
         <div class="page-header container">
             <h1 style="color:white">化工资料信息管理系统
                 

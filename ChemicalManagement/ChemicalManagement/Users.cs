@@ -25,8 +25,8 @@ namespace ChemicalManagement
         public string user_password { get; set; }
         public int user_group_id { get; set; }
     
+        public virtual User_Group User_Group { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Message> Message { get; set; }
-        public virtual User_Group User_Group { get; set; }
     }
 }

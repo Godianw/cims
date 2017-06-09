@@ -161,7 +161,7 @@ namespace ChemicalManagement
                 }
 
                 // 更新数据库
-                string currentTime = DateTime.Now.ToString("yyyy/MM/dd hh:mm:ss").Substring(2);
+                string currentTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss").Substring(2);
                 int met_id = db.Meterial.Where(p => p.met_name == met).Select(s => s.met_id).First();
                 int comp_id = db.Company.Where(p => p.comp_name == comp).Select(s => s.comp_id).First();
                 int ind_id = db.Industry.Where(p => p.ind_name == ind).Select(s => s.ind_id).First();
@@ -174,7 +174,7 @@ namespace ChemicalManagement
                     pdf_met_id = met_id,
                     pdf_comp_id = comp_id,
                     pdf_ind_id = ind_id,
-                    pdf_address = address
+        //            pdf_address = address
                 };
                 db.PDF.Add(newPdf);
                 try
@@ -194,7 +194,8 @@ namespace ChemicalManagement
                 f.SaveAs(Server.MapPath(savePath));
 
                 // 将文件转化为swf文件备份在swf文件夹中
-                int id = db.PDF.Where(p => p.pdf_name == newPdf.pdf_name && p.pdf_address == newPdf.pdf_address)
+                int id = db.PDF.Where(p => p.pdf_name == newPdf.pdf_name && p.pdf_met_id == newPdf.pdf_met_id
+                        && p.pdf_comp_id == newPdf.pdf_comp_id && p.pdf_ind_id == newPdf.pdf_ind_id)
                         .Select(s => s.pdf_id).First();
 
                 string swfPath = "/SWF/" + id + ".swf";

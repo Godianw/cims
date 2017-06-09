@@ -2,7 +2,20 @@
 
 <asp:Content ContentPlaceHolderId="CPH1" runat="server">
 
-    <br /><br /><br />
+    <br /><br />
+
+    <div class="conrainer page-header">
+        <div class="row">
+            <!-- 材料名称 -->
+            <div class="col-xs-10 col-xs-push-1 col-sm-10 col-sm-push-1 col-md-10 col-md-push-1 ">
+                <h2>主页
+                    <small>Home Page</small>
+                </h2>
+            </div>
+        </div>
+    </div>
+    
+    <br />
 
     <div class="conrainer"">
         <div class="row">
@@ -38,8 +51,8 @@
 
             <!-- 查询按钮 -->
             <div class="col-xs-2 col-xs-push-1 col-sm-2 col-sm-push-1 col-md-2 col-md-push-4 ">  
-                <asp:Button CssClass="btn btn-primary" id="searchBtn" runat="server"
-                     OnClick="searchBtn_Click" Text="查询"></asp:Button>  
+                <input id="searchBtn" type="button" class="btn btn-primary" 
+                    onclick="searchBtn_click()" value="查询" />    
             </div>
 
         </div>
@@ -50,13 +63,17 @@
 
 
     <div class="container">
-        <div id="example" class="modal fade" data-backdrop="static" tabindex="-1" role="dialog" 
-            aria-labelledby="myModalLabel">
+        <div id="newFileDialog" class="modal fade" data-backdrop="static" tabindex="-1" 
+            role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        <h4 class="modal-title" id="myModalLabel">输入完整的文件信息并上传PDF文件</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            输入完整的文件信息并上传PDF文件
+                        </h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -76,17 +93,17 @@
                         </div>
                         <input type="file" name="pdf_file" id="pdf_file" multiple="multiple" 
                             class="file-loading" value="" accept="application/pdf" />
-                        <p class="help-block">支持pdf格式，大小不超过4M</p>
+                        <p class="help-block">支持pdf格式，大小不超过100M</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div id ="uploadFileDiv" class ="row">
+    <div id ="uploadFileDiv" class ="row" runat="server">
         <div class="col-xs-3 col-xs-push-1 col-sm-3 col-sm-push-1 col-md-2 col-md-push-1">
             
-        <p><a data-toggle="modal" href="#example" class="btn btn-primary btn-large">
+        <p><a data-toggle="modal" href="#newFileDialog" class="btn btn-primary btn-large">
            <span class="glyphicon glyphicon-plus" ></span> 添加新文件</a>
         </p>
     
@@ -95,33 +112,26 @@
     <br />
 
     <div class="container">
-        <asp:GridView ID="pdf_GridView" runat="server" AutoGenerateColumns="False" GridLines="None"
-            AllowPaging="True" CssClass="mGrid" PagerStyle-CssClass="pgr" 
-            AlternatingRowStyle-CssClass="alt" DataKeyNames="pdf_id" 
-            ShowHeaderWhenEmpty="True" EmptyDataText="找不到相关记录"
-            OnRowDeleting="pdf_GridView_RowDeleting">    
-            <AlternatingRowStyle CssClass="alt"></AlternatingRowStyle>
-            <Columns>
-                <asp:BoundField DataField="pdf_id" HeaderText="编号" InsertVisible="False" 
-                    ReadOnly="True" SortExpression="pdf_id" />
-                 <asp:HyperLinkField DataNavigateUrlFields="pdf_id" 
-                     DataNavigateUrlFormatString="PdfView.aspx?id={0}"  
-                     DataTextField="pdf_name" HeaderText="文件名" Target="_blank" 
-                     SortExpression="pdf_name">
-                </asp:HyperLinkField>
-                <asp:BoundField DataField="pdf_uploadtime" HeaderText="上传时间"
-                    SortExpression="pdf_uploadtime" />
-                <asp:BoundField DataField="met_name" HeaderText="材料名称" SortExpression="met_name" />
-                <asp:BoundField DataField="comp_name" HeaderText="公司名称" SortExpression="comp_name" />
-                <asp:BoundField DataField="ind_name" HeaderText="应用行业" SortExpression="ind_name" />
+ 
+        <table class="table" id="searchResult_Tb">
+            <caption>查询结果</caption>
+            <thead>
+                <tr>
+                    <th>文件名</th>
+                    <th>上传时间</th>
+                    <th>材料名称</th>
+                    <th>公司名称</th>
+                    <th>应用行业</th>
+                </tr>
+            </thead>
+            <tbody id ="tb_body" style="font-family:'微软雅黑'; font-weight:lighter;">
                 
-                <asp:CommandField HeaderText="删除" ShowDeleteButton="True"
-                    DeleteText="<div onclick=&quot;JavaScript:return confirm('文件删除后将无法恢复，确认要删除吗?')&quot;>删除该文件<div/>" />
-            
-            </Columns>
+            </tbody>
+        </table>
 
-            <PagerStyle CssClass="pgr"></PagerStyle>
-        </asp:GridView>    
+        <ul id="pageDiv" class="pagination">
+
+        </ul>
     </div>
 
     <link type="text/css" rel="stylesheet" href="bootstarp/css/fileinput.css"/>
@@ -130,11 +140,146 @@
     <script type="text/javascript" src="bootstarp/js/fileinput_locale_zh.js"></script>
     <script type="text/javascript">
 
+        var curMet;
+        var curComp;
+        var curInd;
+        var def_PageSize = 10;
+
         function onload2() {
+
             //0.初始化fileinput
             var oFileInput = new FileInput();
             oFileInput.Init("pdf_file", "WebService.aspx");
         };
+
+        function searchBtn_click() {
+
+            var def_curPage = 1;    // 当前页默认为1
+
+            /* 材料名称 */
+            var metSelected = document.getElementById('<%=met_type.ClientID%>');
+            var met_type;
+            if (metSelected.selectedIndex != 0)
+                met_type = $('#<%=met_type.ClientID%>').val();
+            else
+                met_type = "";
+
+            /* 公司名称 */
+            var compSelected = document.getElementById('<%=comp_type.ClientID%>');
+            var comp_type;
+            if (compSelected.selectedIndex != 0)
+                comp_type = $('#<%=comp_type.ClientID%>').val();
+            else
+                comp_type = "";
+
+            /* 应用行业 */
+            var indSelected = document.getElementById('<%=ind_type.ClientID%>');
+            var ind_type;
+            if (indSelected.selectedIndex != 0)
+                ind_type = $('#<%=ind_type.ClientID%>').val();
+            else
+                ind_type = "";
+
+            curMet = met_type;
+            curComp = comp_type;
+            curInd = ind_type;
+            turnToPage(def_curPage);
+        };
+
+        function turnToPage(def_curPage) {
+
+            $.ajax({
+                type: 'POST',
+                url: 'DataService.aspx',
+                async: false,
+                data: {
+                    pageSize: def_PageSize,
+                    currentPage: def_curPage,
+                    met: curMet,
+                    comp: curComp,
+                    ind: curInd
+                },
+                beforeSend: function () {
+                    // 禁用按钮防止重复提交
+                    $("#searchBtn").attr({ disabled: "disabled" });
+                },
+                success: function (data) {         
+                    document.getElementById("tb_body").innerHTML = "";
+                    document.getElementById("pageDiv").innerHTML = "";
+
+                    if (data == "]")
+                    {
+                        document.getElementById("tb_body").innerHTML = "<tr><th>找不到相关记录</th></tr>";
+                        return;
+                    }
+
+                    var totalCount;
+                    $.each($.parseJSON(data), function (index, obj) {
+                        totalCount = obj.totalCount;
+
+                        var html = "<tr><th style=\"display:none\">" + obj.pdf_id
+                            + "</th><th><a href=\"/PdfView.aspx?id=" + obj.pdf_id
+                            + "\" target=\"_blank\">" + obj.pdf_name + "</a></th><th>"
+                            + "20" + obj.pdf_uploadtime + "</th><th>" + obj.met_name
+                            + "</th><th>" + obj.comp_name + "</th><th>" + obj.ind_name + "</th>";
+
+                        var session = '<%=Session["username"] %>';
+                        if (session == "admin")
+                            html += "<th><a href=\"javascript:void(0)\""
+                            + "onclick=\"delBtn_click()\">删除</a></th>";
+
+                        html += "</tr>";
+                        document.getElementById("tb_body").innerHTML += html; 
+                    });
+
+                    var pageCount = totalCount / 10 + ((totalCount % 10) > 0 ? 1 : 0);   
+                    for (var i = 1; i <= pageCount; ++ i)
+                    {
+                        var html = "<li><a href=\"javascript:void(0)\" onclick=\"turnToPage("
+                            + i + ")\">"+ i + "</a></li>";
+                        document.getElementById("pageDiv").innerHTML += html;
+                    }
+                },
+                error: function () {
+                    alert("查询失败");
+                },
+                complete: function () {
+                    $("#searchBtn").removeAttr("disabled");
+                }
+            });
+        }
+
+        function delBtn_click() {
+
+            if (!confirm("文件删除后将无法恢复，确认要删除吗?"))
+                return;
+
+            var tr = event.srcElement.parentNode.parentElement; // 通过event.srcelement 获取激活事件的对象 td  
+       //     alert("行号：" + (tr.rowIndex) + "，id：" + tr.firstElementChild.innerHTML);
+
+            $.ajax({
+                type: 'POST',
+                url: 'DataService.aspx',
+                async: false,
+                data: {
+                    delRow_Id: tr.firstElementChild.innerHTML
+                },
+                beforeSend: function () {
+                    // 禁用按钮防止重复提交
+               //     $("#searchBtn").attr({ disabled: "disabled" });
+                },
+                success: function (data) {
+                    alert('删除成功');
+                },
+                error: function () {
+                    alert("删除失败");
+                },
+                complete: function () {
+                    $('#searchBtn').click();
+            //        $("#searchBtn").removeAttr("disabled");
+                }
+            });
+        }
 
         //初始化fileinput
         var FileInput = function () {

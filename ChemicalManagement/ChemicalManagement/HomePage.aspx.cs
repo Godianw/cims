@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -66,53 +67,6 @@ namespace ChemicalManagement
                 ind_type.Items.Add(new ListItem(singleRecord.ind_name.ToString()));
             }
         }
-
-        // 查询数据
-        protected void searchBtn_Click(object sender, EventArgs e)
-        {
-            string selectedMet;
-            string selectedComp;
-            string selectedInd;
-
-            CIMSDBEntities db = new CIMSDBEntities();
-            var records = (IEnumerable<View_PDF>)db.View_PDF;
-            if (selectedMetIndex != 0)
-            {
-                selectedMet = met_type.Items[selectedMetIndex].Text;
-                records = records.Where(p => p.met_name == selectedMet);
-            }
-            if (selectedCompIndex != 0)
-            {
-                selectedComp = comp_type.Items[selectedCompIndex].Text;
-                records = records.Where(p => p.comp_name == selectedComp);
-            }
-            if (selectedIndIndex != 0)
-            {
-                selectedInd = ind_type.Items[selectedIndIndex].Text;
-                records = records.Where(p => p.ind_name == selectedInd);
-            }
-
-            var result = records.ToList();
-            pdf_GridView.DataSource = result;
-            pdf_GridView.DataBind();
-        }
-
-        protected void pdf_GridView_RowDeleting(object sender, GridViewDeleteEventArgs e)
-        {
-            /* 删除数据 */
-            CIMSDBEntities db = new CIMSDBEntities();
-            string _id = pdf_GridView.Rows[e.RowIndex].Cells[0].Text;
-            PDF delRecoed = new PDF() { pdf_id = Convert.ToInt32(_id) };
-            db.PDF.Attach(delRecoed);
-            db.PDF.Remove(delRecoed);
-            try
-            {
-                db.SaveChanges();
-            }
-            catch(Exception)
-            {
-                ClientScript.RegisterStartupScript(GetType(), "message", "<script>alert('文件不存在');</script>");
-            }
-        }
+        
     }
 }

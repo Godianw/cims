@@ -28,11 +28,12 @@ namespace ChemicalManagement
     
         public virtual DbSet<Company> Company { get; set; }
         public virtual DbSet<Industry> Industry { get; set; }
-        public virtual DbSet<Message> Message { get; set; }
         public virtual DbSet<Meterial> Meterial { get; set; }
-        public virtual DbSet<PDF> PDF { get; set; }
         public virtual DbSet<View_PDF> View_PDF { get; set; }
         public virtual DbSet<User_Group> User_Group { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Message> Message { get; set; }
+        public virtual DbSet<View_Msg> View_Msg { get; set; }
+        public virtual DbSet<PDF> PDF { get; set; }
     }
 }

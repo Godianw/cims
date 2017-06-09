@@ -40,21 +40,12 @@ namespace ChemicalManagement {
         protected global::System.Web.UI.HtmlControls.HtmlSelect ind_type;
         
         /// <summary>
-        /// searchBtn 控件。
+        /// uploadFileDiv 控件。
         /// </summary>
         /// <remarks>
         /// 自动生成的字段。
         /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button searchBtn;
-        
-        /// <summary>
-        /// pdf_GridView 控件。
-        /// </summary>
-        /// <remarks>
-        /// 自动生成的字段。
-        /// 若要进行修改，请将字段声明从设计器文件移到代码隐藏文件。
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView pdf_GridView;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl uploadFileDiv;
     }
 }

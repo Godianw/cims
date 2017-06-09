@@ -17,7 +17,6 @@ namespace ChemicalManagement
         public int pdf_id { get; set; }
         public string pdf_name { get; set; }
         public string pdf_uploadtime { get; set; }
-        public string pdf_address { get; set; }
         public int pdf_met_id { get; set; }
         public int pdf_comp_id { get; set; }
         public int pdf_ind_id { get; set; }

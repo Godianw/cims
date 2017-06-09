@@ -14,10 +14,10 @@ namespace ChemicalManagement
     
     public partial class Message
     {
-        public int mess_id { get; set; }
-        public int mess_user_id { get; set; }
-        public string mess_content { get; set; }
-        public string mess_time { get; set; }
+        public int msg_id { get; set; }
+        public int msg_user_id { get; set; }
+        public string msg_content { get; set; }
+        public string msg_time { get; set; }
         public string reply_content { get; set; }
         public string reply_time { get; set; }
     
